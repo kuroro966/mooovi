@@ -14,17 +14,32 @@
       <div id="yjContentsHeader">
         <nav class="globalnav">
           <div class="globalnav__menu">
+          
+          
             <ul class="gmenu">
               <li class="logo" style="float: left">
                 <a href="/">mooovi</a>
               </li>
-              <li class="entry_button" style="float: right">
-                <a href="/products/search">投稿する</a>
-              </li>
+              
+               <% if user_signed_in? %>
+                <li class="entry_button" style="float: right">
+                  <%= link_to "signout","/users/sign_out",method: :delete %>
+                  <!-- aタグだとgetメソッドになってしまうがサインアウトはDeliteメソッド。よってlink toが必須 -->
+                </li>
+                <li class="entry_button" style="float: right">
+                    <a href="/users/<%= current_user.id %>">マイページ</a>
+                </li>
+              <% end %>
+      
+             <li class="entry_button" style="float: right">
+              <a href="/products/search">投稿する</a>
+             </li>
             </ul>
+            
           </div>
         </nav>
       </div>
+      
       <div class="bgcolor-white pt1em pb1em" id="contents">
         <%= yield %>
           <aside class="section">
@@ -32,7 +47,9 @@
               <i class="icon-crown color-gray-light"></i>投稿ランキング
             </h4>
             <ul class="listview listview--condensed text-small">
-              <% [].each.with_index(1) do |product, i| %>
+              <% @ranking.each.with_index(1) do |product, i| %>
+              <!-- withindexで要素の分だけ数字を増やしていく。かっこの数字からスタート、繰り返しが終わるまで。-->
+              <!-- @rankingにproduct_idのレコードが多い順に5つを配列に入れてるのでベスト5になってる。-->
               <li data-cinema-id="346394">
                 <a href="/products/<%= product.id %>">
                   <div class="box">
